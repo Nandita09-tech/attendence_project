@@ -1,7 +1,7 @@
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const AttendanceManager = require('../modules/attendanceManager.js');
+const AttendanceManager = require('../models/AttendanceManager.js');
 require('dotenv').config();
 
 exports.login = async(req,res)=>{
@@ -20,10 +20,11 @@ exports.login = async(req,res)=>{
 
         }
         // generate the jwt
-        const sign = jwt.sign({id:user._id.toString()});
+        const token = jwt.sign({id:user._id.toString()},'secret_key' ,{expiresIn: '5m'});
 
         // genarte a cokiee and glace jwt/token inside it
-        res.console('jwt',token,{message : $*60*1000,http:true});
+        res.cookie('jwt',token,{maxAge : 5*60*1000,http:true});
+        res.redirect('/home');
         
     } catch (error) {
         return res.status(500).send("Internal  server error ");
